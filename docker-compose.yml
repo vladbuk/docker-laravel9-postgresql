@@ -2,18 +2,19 @@
 version: '3'
 
 services:
-  app:
-    image: docker.io/bitnami/laravel:9
+  php:
+    build:
+      context: .
     ports:
-      - '8000:8000'
-    environment:
-      - DB_HOST=postgresql
-      - DB_PORT=5432
-      - DB_USERNAME=psqluser
-      - DB_DATABASE=appdb
-      - DB_PASSWORD=password123
+      - '80:80'
+#    environment:
+#      - DB_HOST=postgresql
+#      - DB_PORT=5432
+#      - DB_USERNAME=psqluser
+#      - DB_DATABASE=appdb
+#      - DB_PASSWORD=password123
     volumes:
-      - './app:/app'
+      - './app:/var/www/html'
     depends_on:
       - postgresql
     networks:
@@ -21,16 +22,16 @@ services:
 
 
   postgresql:
-    image: docker.io/bitnami/postgresql:14
+    image: postgres:14
     ports:
       - '5432:5432'
     volumes:
       - './postgresql_data:/bitnami/postgresql'
     environment:
       #- 'ALLOW_EMPTY_PASSWORD=yes'
-      - POSTGRESQL_USER=psqluser
-      - POSTGRESQL_DATABASE=appdb
-      - POSTGRESQL_PASSWORD=password123
+      - POSTGRES_USER=psqluser
+      - POSTGRES_DATABASE=appdb
+      - POSTGRES_PASSWORD=password123
     networks:
       - app-net
 
