@@ -1,23 +1,46 @@
-version: '2'
+---
+version: '3'
 
 services:
-  mariadb:
-    image: docker.io/bitnami/mariadb:10.6
-    environment:
-      # ALLOW_EMPTY_PASSWORD is recommended only for development.
-      - ALLOW_EMPTY_PASSWORD=yes
-      - MARIADB_USER=bn_myapp
-      - MARIADB_DATABASE=bitnami_myapp
-  myapp:
+  app:
     image: docker.io/bitnami/laravel:9
     ports:
       - '8000:8000'
     environment:
-      - DB_HOST=mariadb
-      - DB_PORT=3306
-      - DB_USERNAME=bn_myapp
-      - DB_DATABASE=bitnami_myapp
+      - DB_HOST=postgresql
+      - DB_PORT=5432
+      - DB_USERNAME=psqluser
+      - DB_DATABASE=appdb
+      - DB_PASSWORD=password123
     volumes:
-      - './my-project:/app'
+      - './app:/app'
     depends_on:
-      - mariadb
+      - postgresql
+    networks:
+      - app-net
+
+
+  postgresql:
+    image: docker.io/bitnami/postgresql:14
+    ports:
+      - '5432:5432'
+    volumes:
+      - './postgresql_data:/bitnami/postgresql'
+    environment:
+      #- 'ALLOW_EMPTY_PASSWORD=yes'
+      - POSTGRESQL_USER=psqluser
+      - POSTGRESQL_DATABASE=appdb
+      - POSTGRESQL_PASSWORD=password123
+    networks:
+      - app-net
+
+
+volumes:
+  postgresql_data:
+    driver: local
+  app:
+    driver: local
+
+networks:
+  app-net:
+    driver: bridge
