@@ -26,11 +26,11 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - './postgresql_data:/bitnami/postgresql'
+      - './postgresql/data:/var/lib/postgresql/data'
     environment:
       #- 'ALLOW_EMPTY_PASSWORD=yes'
       - POSTGRES_USER=psqluser
-      - POSTGRES_DATABASE=appdb
+      - POSTGRES_DB=appdb
       - POSTGRES_PASSWORD=password123
     networks:
       - app-net
